@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 function ChatScreen({ theme }) {
   const [messages, setMessages] = useState([]);
-  const [delay, setDelay] = useState(2000);
+  const [delay, setDelay] = useState(localStorage.getItem('chatDelay') || 200);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const initialMessages = [
@@ -41,8 +41,10 @@ function ChatScreen({ theme }) {
     return () => clearInterval(interval);
   }, [currentIndex, delay, initialMessages.length]);
 
-  const handleDelayChange = (e) => {
-    setDelay(parseInt(e.target.value));
+  const handleDelaySubmit = () => {
+    localStorage.setItem('chatDelay', delay);
+    setCurrentIndex(0);
+    setMessages([]);
   };
 
   return (
@@ -70,10 +72,11 @@ function ChatScreen({ theme }) {
         <label className="mr-2">Delay (ms):</label>
         <input
           type="number"
+          onChange={(e) => setDelay(e.target.value)}
           value={delay}
-          onChange={handleDelayChange}
           className="border border-gray-300 px-2 py-1 rounded-md"
         />
+        <button className="bg-blue-500 text-white px-4 py-2 rounded-md ml-2" onClick={handleDelaySubmit}>Submit</button>
       </div>
     </div>
   );
